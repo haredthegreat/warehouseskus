@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse SKU Picker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Warehouse SKU Picker</h1>
+            <p>Quickly find warehouse locations for your SKUs</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Upload Picking List</h2>
+            </div>
+            
+            <div id="uploadArea" class="upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drop your image here or click to upload</p>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            </div>
+            
+            <img id="imagePreview" alt="Preview">
+            
+            <div class="button-group">
+                <button id="scanButton" class="button button-success" disabled>
+                    <i class="fas fa-camera"></i> Scan Image for SKUs
+                </button>
+                <button id="manualEntryBtn" class="button button-primary">
+                    <i class="fas fa-keyboard"></i> Manual Entry
+                </button>
+                <button id="configBtn" class="button button-secondary">
+                    <i class="fas fa-cog"></i> Database Settings
+                </button>
+            </div>
+        </div>
+        
+        <div id="processing" class="processing">
+            <div class="processing-spinner"></div>
+            <p>Processing image... Please wait.</p>
+        </div>
+        
+        <div id="results" class="results card">
+            <div class="card-header">
+                <h2>Results</h2>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy">
+                        <option value="location">Location</option>
+                        <option value="sku">SKU</option>
+                    </select>
+                </div>
+                
+                <button id="optimizeRouteBtn" class="button button-purple">
+                    <i class="fas fa-route"></i> Optimize Picking Route
+                </button>
+            </div>
+            
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+            
+            <div id="notFound" class="not-found">
+                <h3><i class="fas fa-exclamation-triangle"></i> SKUs Not Found:</h3>
+                <ul id="notFoundList"></ul>
+            </div>
+            
+            <div class="export-buttons">
+                <button id="printBtn" class="button button-primary">
+                    <i class="fas fa-print"></i> Print Results
+                </button>
+                <button id="exportBtn" class="button button-success">
+                    <i class="fas fa-file-export"></i> Export CSV
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="manualEntryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Enter SKUs Manually</h2>
+            <div class="form-group">
+                <p>Enter one SKU per line:</p>
+                <textarea id="manualSKUs" class="form-control" rows="10"></textarea>
+            </div>
+            <button id="submitManualSKUs" class="button button-primary">
+                <i class="fas fa-check"></i> Submit SKUs
+            </button>
+        </div>
+    </div>
+    
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Database Settings</h2>
+            
+            <div class="tab-container">
+                <div class="tab-headers">
+                    <div class="tab-header active" data-tab="add-sku">Add/Update SKU</div>
+                    <div class="tab-header" data-tab="bulk-import">Bulk Import</div>
+                    <div class="tab-header" data-tab="database-mgmt">Database Management</div>
+                </div>
+                
+                <div id="add-sku" class="tab-content active">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div>
+                                <label for="skuInput">SKU</label>
+                                <input type="text" id="skuInput" class="form-control" placeholder="Enter SKU">
+                            </div>
+                            <div>
+                                <label for="locationInput">Location</label>
+                                <input type="text" id="locationInput" class="form-control" placeholder="e.g., A01">
+                            </div>
+                            <div style="margin-top: 24px;">
+                                <button id="addSkuButton" class="button button-primary">
+                                    <i class="fas fa-plus"></i> Add/Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="bulk-import" class="tab-content">
+                    <div class="form-group">
+                        <p>Enter data in format "SKU,Location" (one per line):</p>
+                        <textarea id="bulkImport" class="form-control" rows="10"></textarea>
+                    </div>
+                    <button id="bulkImportButton" class="button button-primary">
+                        <i class="fas fa-file-import"></i> Import Data
+                    </button>
+                </div>
+                
+                <div id="database-mgmt" class="tab-content">
+                    <div class="form-group">
+                        <p>Current entries: <span id="dbCount" class="badge badge-info">0</span></p>
+                        <div class="button-group">
+                            <button id="exportDbButton" class="button button-primary">
+                                <i class="fas fa-download"></i> Export Database
+                            </button>
+                            <button id="importCsvButton" class="button button-secondary">
+                                <i class="fas fa-file-csv"></i> Import CSV
+                            </button>
+                            <button id="clearDbButton" class="button button-danger">
+                                <i class="fas fa-trash-alt"></i> Clear Database
+                            </button>
+                        </div>
+                        <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
