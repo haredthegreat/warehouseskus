@@ -8,73 +8,86 @@ function loadDatabase() {
         warehouseDatabase = JSON.parse(savedDB);
         updateDbCount();
     } else {
-        // Demo data
-        warehouseDatabase = {
-            "SKU12345 100": "A01",
-            "SKU23456 200": "A12",
-            "SKU34567 300": "B22",
-            "SKU45678 400": "C30",
-            "SKU56789 500": "B05",
-            "SKU67890 600": "A39",
-            "SKU78901 700": "C15",
-            "ITEM1001 101": "A02",
-            "ITEM1002 102": "B45",
-            "ITEM1003 103": "C25"
-        };
-        saveDatabase();
+        // Load default database from CSV
+        loadDefaultDatabase();
     }
 }
 
-// Check if this is first run and load the default database
-function checkFirstRun() {
-    const hasRun = localStorage.getItem('warehouseAppHasRun');
+// Load default database from CSV file
+function loadDefaultDatabase() {
+    console.log("Loading default database from CSV...");
     
-    if (!hasRun) {
-        // First time running - load default database
-        fetch('database.csv')
-            .then(response => response.text())
-            .then(data => {
-                Papa.parse(data, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        results.data.forEach(row => {
-                            const sku = row.SKU || row.sku;
-                            const location = row.Location || row.location;
-                            
-                            if (sku && location) {
-                                warehouseDatabase[sku] = location;
-                            }
-                        });
+    // Try to fetch the database.csv file from the same directory
+    fetch('database.csv')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Database file not found. Using demo data instead.');
+            }
+            return response.text();
+        })
+        .then(csvData => {
+            // Parse CSV using PapaParse
+            Papa.parse(csvData, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    let importCount = 0;
+                    
+                    results.data.forEach(row => {
+                        // Handle both "SKU" and "sku" column names
+                        const sku = row.SKU || row.sku;
+                        // Handle both "Location" and "location" column names
+                        const location = row.Location || row.location;
                         
+                        if (sku && location) {
+                            warehouseDatabase[sku] = location;
+                            importCount++;
+                        }
+                    });
+                    
+                    if (importCount > 0) {
                         saveDatabase();
-                        localStorage.setItem('warehouseAppHasRun', 'true');
-                        console.log("Default database loaded");
+                        console.log(`Successfully loaded ${importCount} SKU-Location pairs from default database.`);
+                    } else {
+                        // If CSV was empty or had no valid data, load demo data
+                        loadDemoData();
                     }
-                });
-            })
-            .catch(err => {
-                console.error("Could not load default database", err);
+                },
+                error: function(error) {
+                    console.error('Error parsing CSV:', error);
+                    loadDemoData();
+                }
             });
-    }
+        })
+        .catch(error => {
+            console.error(error);
+            loadDemoData();
+        });
 }
 
-// Call this function at the end of your DOMContentLoaded event
-document.addEventListener('DOMContentLoaded', function() {
-    loadDatabase();
-    checkFirstRun();
-    // ... rest of your existing code
-});
-
-
-
-
-
-
-
-
-
-
+// Load demo data as fallback
+function loadDemoData() {
+    console.log("Loading demo data...");
+    warehouseDatabase = {
+        "SKU12345 100": "A01",
+        "SKU23456 200": "A12",
+        "SKU34567 300": "B22",
+        "SKU45678 400": "C30",
+        "SKU56789 500": "B05",
+        "SKU67890 600": "A39",
+        "SKU78901 700": "C15",
+        "ITEM1001 101": "A02",
+        "ITEM1002 102": "B45",
+        "ITEM1003 103": "C25",
+        "DD1391 100": "B12",
+        "DQ9131 700": "B43",
+        "HP7580 100": "A11",
+        "GY9265 100": "C15",
+        "BY9262 100": "A04",
+        "GZ3495 100": "B43"
+    };
+    saveDatabase();
+}
 
 function saveDatabase() {
     localStorage.setItem('warehouseDatabase', JSON.stringify(warehouseDatabase));
@@ -141,18 +154,18 @@ document.addEventListener('DOMContentLoaded', function() {
         uploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
             this.style.borderColor = 'var(--primary-color)';
-            this.style.backgroundColor = 'rgba(37, 99, 235, 0.05)';
+            this.style.backgroundColor = 'rgba(109, 93, 252, 0.05)';
         });
         
         uploadArea.addEventListener('dragleave', function() {
             this.style.borderColor = 'var(--border-color)';
-            this.style.backgroundColor = 'var(--bg-color)';
+            this.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
         });
         
         uploadArea.addEventListener('drop', function(e) {
             e.preventDefault();
             this.style.borderColor = 'var(--border-color)';
-            this.style.backgroundColor = 'var(--bg-color)';
+            this.style.backgroundColor = 'rgba(255, 255, 255, 0.02)';
             
             if (e.dataTransfer.files.length) {
                 handleImageUpload(e.dataTransfer.files[0]);
@@ -628,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.setAttribute('href', url);
-            link.setAttribute('download', 'warehouse_database.csv');
+            link.setAttribute('download', 'database.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
