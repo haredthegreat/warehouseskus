@@ -1,4 +1,12 @@
+/* Theme variables */
 :root {
+    /* Common variables */
+    --radius: 8px;
+    --transition: all 0.2s ease;
+}
+
+/* Dark theme (default) */
+html[data-theme='dark'] {
     --primary-color: #6d5dfc;
     --primary-hover: #5a4af4;
     --secondary-color: #ff7849;
@@ -19,8 +27,30 @@
     --border-color: #374151;
     --input-bg: #374151;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --radius: 10px;
-    --transition: all 0.2s ease;
+}
+
+/* Light theme */
+html[data-theme='light'] {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #f97316;
+    --secondary-hover: #ea580c;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --success-color: #10b981;
+    --success-hover: #059669;
+    --purple-color: #8b5cf6;
+    --purple-hover: #7c3aed;
+    
+    --text-color: #1e293b;
+    --text-light: #64748b;
+    --text-dark: #0f172a;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --header-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --input-bg: #f8fafc;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -34,15 +64,16 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--bg-color);
-    background-image: linear-gradient(45deg, #111827 0%, #1e293b 100%);
     padding: 20px;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     margin-bottom: 60px; /* Space for footer */
+    padding-bottom: 20px;
 }
 
 .header {
@@ -52,13 +83,14 @@ body {
     border-radius: var(--radius);
     background-color: var(--header-bg);
     box-shadow: var(--shadow);
+    transition: background-color 0.3s ease;
 }
 
 .header h1 {
     font-size: 2.5rem;
     color: var(--primary-color);
     margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header p {
@@ -72,12 +104,12 @@ body {
     box-shadow: var(--shadow);
     padding: 25px;
     margin-bottom: 30px;
-    transition: var(--transition);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     border: 1px solid var(--border-color);
 }
 
 .card:hover {
-    box-shadow: 0 8px 15px -1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 15px -1px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
 }
 
@@ -338,6 +370,11 @@ select {
     border: 1px solid rgba(255, 73, 73, 0.3);
 }
 
+html[data-theme='light'] .not-found {
+    background-color: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
 .not-found h3 {
     color: var(--danger-color);
     margin-bottom: 10px;
@@ -531,9 +568,63 @@ textarea.form-control {
     background-color: var(--card-bg);
     color: var(--text-light);
     text-align: center;
-    padding: 10px;
+    padding: 10px 20px;
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+    z-index: 10;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Theme toggle button styling */
+.theme-toggle {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 6px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(109, 93, 252, 0.2);
+}
+
+.theme-toggle i {
+    font-size: 1rem;
+}
+
+/* Show sun icon in dark mode, moon icon in light mode */
+html[data-theme='dark'] .theme-toggle .fa-sun {
+    display: inline-block;
+    color: #f59e0b;
+}
+
+html[data-theme='dark'] .theme-toggle .fa-moon {
+    display: none;
+}
+
+html[data-theme='light'] .theme-toggle .fa-sun {
+    display: none;
+}
+
+html[data-theme='light'] .theme-toggle .fa-moon {
+    display: inline-block;
+    color: #6366f1;
 }
 
 @media (max-width: 768px) {
@@ -571,6 +662,15 @@ textarea.form-control {
         margin: 10% auto;
         width: 95%;
         padding: 20px;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .theme-toggle {
+        margin-top: 5px;
     }
 }
 
