@@ -1,21 +1,25 @@
 :root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --secondary-color: #f97316;
-    --secondary-hover: #ea580c;
-    --danger-color: #ef4444;
-    --danger-hover: #dc2626;
-    --success-color: #10b981;
-    --success-hover: #059669;
-    --purple-color: #8b5cf6;
-    --purple-hover: #7c3aed;
-    --text-color: #333;
-    --text-light: #6b7280;
-    --bg-color: #f9fafb;
-    --card-bg: #ffffff;
-    --border-color: #e5e7eb;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --radius: 8px;
+    --primary-color: #6d5dfc;
+    --primary-hover: #5a4af4;
+    --secondary-color: #ff7849;
+    --secondary-hover: #ff6430;
+    --danger-color: #ff4949;
+    --danger-hover: #ff3030;
+    --success-color: #13ce66;
+    --success-hover: #10b85a;
+    --purple-color: #8a4fff;
+    --purple-hover: #7a3bfe;
+    
+    --text-color: #e2e8f0;
+    --text-light: #a0aec0;
+    --text-dark: #f8fafc;
+    --bg-color: #111827;
+    --card-bg: #1f2937;
+    --header-bg: #111827;
+    --border-color: #374151;
+    --input-bg: #374151;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --radius: 10px;
     --transition: all 0.2s ease;
 }
 
@@ -30,23 +34,31 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--bg-color);
+    background-image: linear-gradient(45deg, #111827 0%, #1e293b 100%);
     padding: 20px;
+    min-height: 100vh;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    margin-bottom: 60px; /* Space for footer */
 }
 
 .header {
     text-align: center;
     margin-bottom: 30px;
+    padding: 20px 0;
+    border-radius: var(--radius);
+    background-color: var(--header-bg);
+    box-shadow: var(--shadow);
 }
 
 .header h1 {
     font-size: 2.5rem;
     color: var(--primary-color);
     margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .header p {
@@ -61,6 +73,12 @@ body {
     padding: 25px;
     margin-bottom: 30px;
     transition: var(--transition);
+    border: 1px solid var(--border-color);
+}
+
+.card:hover {
+    box-shadow: 0 8px 15px -1px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
 .card-header {
@@ -75,6 +93,12 @@ body {
 .card-header h2 {
     font-size: 1.5rem;
     color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+.card-header h2 i {
+    margin-right: 8px;
 }
 
 .upload-area {
@@ -83,14 +107,14 @@ body {
     padding: 40px 20px;
     text-align: center;
     margin-bottom: 20px;
-    background-color: var(--bg-color);
+    background-color: rgba(255, 255, 255, 0.02);
     cursor: pointer;
     transition: var(--transition);
 }
 
 .upload-area:hover {
     border-color: var(--primary-color);
-    background-color: rgba(37, 99, 235, 0.05);
+    background-color: rgba(109, 93, 252, 0.05);
 }
 
 .upload-area i {
@@ -135,6 +159,8 @@ body {
 
 .button-primary:hover:not(:disabled) {
     background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button-secondary {
@@ -144,6 +170,8 @@ body {
 
 .button-secondary:hover:not(:disabled) {
     background-color: var(--secondary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button-danger {
@@ -153,6 +181,8 @@ body {
 
 .button-danger:hover:not(:disabled) {
     background-color: var(--danger-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button-success {
@@ -162,6 +192,8 @@ body {
 
 .button-success:hover:not(:disabled) {
     background-color: var(--success-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button-purple {
@@ -171,11 +203,15 @@ body {
 
 .button-purple:hover:not(:disabled) {
     background-color: var(--purple-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 #imagePreview {
@@ -193,7 +229,7 @@ body {
 }
 
 .processing-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
+    border: 4px solid rgba(255, 255, 255, 0.1);
     border-left-color: var(--primary-color);
     border-radius: 50%;
     width: 40px;
@@ -222,9 +258,10 @@ body {
     gap: 15px;
     margin-bottom: 20px;
     padding: 15px;
-    background-color: var(--bg-color);
+    background-color: rgba(255, 255, 255, 0.02);
     border-radius: var(--radius);
     align-items: center;
+    border: 1px solid var(--border-color);
 }
 
 .filter-group {
@@ -242,7 +279,8 @@ select {
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     font-size: 1rem;
-    background-color: white;
+    background-color: var(--input-bg);
+    color: var(--text-color);
 }
 
 .results-table {
@@ -276,17 +314,17 @@ select {
 }
 
 .results-table tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: rgba(255, 255, 255, 0.02);
 }
 
 .results-table tr:hover {
-    background-color: rgba(37, 99, 235, 0.05);
+    background-color: rgba(109, 93, 252, 0.05);
 }
 
 .location {
     font-weight: 600;
-    color: var(--success-color);
-    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--bg-color);
+    background-color: var(--success-color);
     padding: 4px 10px;
     border-radius: 4px;
     display: inline-block;
@@ -295,8 +333,9 @@ select {
 .not-found {
     margin-top: 30px;
     padding: 20px;
-    background-color: rgba(239, 68, 68, 0.1);
+    background-color: rgba(255, 73, 73, 0.1);
     border-radius: var(--radius);
+    border: 1px solid rgba(255, 73, 73, 0.3);
 }
 
 .not-found h3 {
@@ -334,7 +373,7 @@ select {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
 }
 
@@ -348,6 +387,7 @@ select {
     max-width: 600px;
     animation: modalFadeIn 0.3s;
     position: relative;
+    border: 1px solid var(--border-color);
 }
 
 @keyframes modalFadeIn {
@@ -374,6 +414,12 @@ select {
     margin-bottom: 20px;
     padding-bottom: 15px;
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+}
+
+.modal-content h2 i {
+    margin-right: 10px;
 }
 
 .form-group {
@@ -398,12 +444,14 @@ select {
     border-radius: var(--radius);
     font-size: 1rem;
     transition: var(--transition);
+    background-color: var(--input-bg);
+    color: var(--text-color);
 }
 
 .form-control:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 0 0 3px rgba(109, 93, 252, 0.2);
 }
 
 textarea.form-control {
@@ -434,6 +482,11 @@ textarea.form-control {
     border-bottom: 3px solid transparent;
     font-weight: 500;
     transition: var(--transition);
+    color: var(--text-light);
+}
+
+.tab-header:hover {
+    color: var(--text-color);
 }
 
 .tab-header.active {
@@ -466,8 +519,21 @@ textarea.form-control {
 }
 
 .badge-info {
-    background-color: rgba(37, 99, 235, 0.1);
+    background-color: rgba(109, 93, 252, 0.1);
     color: var(--primary-color);
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--card-bg);
+    color: var(--text-light);
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
 }
 
 @media (max-width: 768px) {
@@ -521,8 +587,10 @@ textarea.form-control {
         left: 0;
         top: 0;
         width: 100%;
+        background-color: white !important;
+        color: black !important;
     }
-    .header, .card-header, .button-group, .filters, .export-buttons, #notFound {
+    .header, .card-header, .button-group, .filters, .export-buttons, #notFound, .footer {
         display: none !important;
     }
     .results-table {
@@ -531,5 +599,19 @@ textarea.form-control {
     }
     .results-table th, .results-table td {
         border: 1px solid #333;
+        color: black !important;
+    }
+    .results-table th {
+        background-color: #eee !important;
+        color: black !important;
+    }
+    .location {
+        background-color: #dfd !important;
+        color: black !important;
+    }
+    .card {
+        box-shadow: none !important;
+        background-color: white !important;
+        border: none !important;
     }
 }
