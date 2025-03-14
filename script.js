@@ -1,6 +1,22 @@
 // Sample database for demo purposes (normally this would come from your server/database)
 let warehouseDatabase = {};
 
+// Theme management
+function loadThemePreference() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
 // Load database from localStorage
 function loadDatabase() {
     const savedDB = localStorage.getItem('warehouseDatabase');
@@ -104,6 +120,7 @@ function updateDbCount() {
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
+    loadThemePreference();
     loadDatabase();
     
     // Get DOM elements
@@ -121,14 +138,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const configBtn = document.getElementById('configBtn');
     const configModal = document.getElementById('configModal');
     const notFoundDiv = document.getElementById('notFound');
+    const themeToggle = document.getElementById('themeToggle');
     
     console.log("Elements initialized:", {
         uploadArea: !!uploadArea,
         imageUpload: !!imageUpload,
         scanButton: !!scanButton,
         manualEntryBtn: !!manualEntryBtn,
-        configBtn: !!configBtn
+        configBtn: !!configBtn,
+        themeToggle: !!themeToggle
     });
+    
+    // Theme toggle
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            toggleTheme();
+        });
+    }
     
     // Set up tab functionality
     const tabHeaders = document.querySelectorAll('.tab-header');
