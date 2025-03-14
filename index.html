@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +12,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Warehouse SKU Picker</h1>
-            <p>Quickly find warehouse locations for your SKUs</p>
+            <h1>Locate your SKUs</h1>
+            <p>Quickly find locations for your SKUs</p>
         </div>
         
         <div class="card">
@@ -171,7 +171,14 @@
     </div>
 
     <footer class="footer">
-        <p>Warehouse SKU Picker v1.0 | Made by yours truly 🦍🦍🦍</p>
+        <div class="footer-content">
+            <p>Made by yours truly 🦍🦍🦍</p>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+                <span>Theme</span>
+            </button>
+        </div>
     </footer>
 
     <script src="script.js"></script>
