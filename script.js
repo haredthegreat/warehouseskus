@@ -25,6 +25,57 @@ function loadDatabase() {
     }
 }
 
+// Check if this is first run and load the default database
+function checkFirstRun() {
+    const hasRun = localStorage.getItem('warehouseAppHasRun');
+    
+    if (!hasRun) {
+        // First time running - load default database
+        fetch('database.csv')
+            .then(response => response.text())
+            .then(data => {
+                Papa.parse(data, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        results.data.forEach(row => {
+                            const sku = row.SKU || row.sku;
+                            const location = row.Location || row.location;
+                            
+                            if (sku && location) {
+                                warehouseDatabase[sku] = location;
+                            }
+                        });
+                        
+                        saveDatabase();
+                        localStorage.setItem('warehouseAppHasRun', 'true');
+                        console.log("Default database loaded");
+                    }
+                });
+            })
+            .catch(err => {
+                console.error("Could not load default database", err);
+            });
+    }
+}
+
+// Call this function at the end of your DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', function() {
+    loadDatabase();
+    checkFirstRun();
+    // ... rest of your existing code
+});
+
+
+
+
+
+
+
+
+
+
+
 function saveDatabase() {
     localStorage.setItem('warehouseDatabase', JSON.stringify(warehouseDatabase));
     updateDbCount();
